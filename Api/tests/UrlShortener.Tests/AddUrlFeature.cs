@@ -5,7 +5,8 @@ using UrlShortener.Core.Urls.Add;
 
 namespace UrlShortener.Tests;
 
-public class AddUrlFeature : IClassFixture<ApiFixture>
+[Collection("Api collection")]
+public class AddUrlFeature
 {
     private readonly HttpClient _client;
 

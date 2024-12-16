@@ -2,7 +2,7 @@ param name string
 param location string
 param keyVaultName string
 
-resource redis 'Microsoft.Cache/redis@2024-11-01' = {
+resource redis 'Microsoft.Cache/redis@2023-08-01' = {
   name: name
   location: location
   properties: {
