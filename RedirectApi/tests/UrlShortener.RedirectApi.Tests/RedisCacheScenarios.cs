@@ -1,4 +1,5 @@
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using StackExchange.Redis;
 using UrlShortener.RedirectApi.Infrastructure;
@@ -22,7 +23,7 @@ public class RedisCacheScenarios
         var reader = Substitute.For<IShortenedUrlReader>();
         reader.GetLongUrlAsync("short", Arg.Any<CancellationToken>())
             .Returns(new ReadLongUrlResponse(true, "http://google.com"));
-        var cache = new RedisUrlReader(reader, _connectionMultiplexer);
+        var cache = new RedisUrlReader(reader, _connectionMultiplexer, Substitute.For<ILogger<RedisUrlReader>>());
 
         _ = await cache.GetLongUrlAsync("short", CancellationToken.None);
 

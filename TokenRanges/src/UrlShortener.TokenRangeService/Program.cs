@@ -11,12 +11,17 @@ if (!string.IsNullOrEmpty(keyVaultName))
         new DefaultAzureCredential());
 }
 
+builder.Services.AddHealthChecks()
+    .AddNpgSql(builder.Configuration["Postgres:ConnectionString"]!);
+
 builder.Services.AddSingleton(
     new TokenRangeManager(builder.Configuration["Postgres:ConnectionString"]!));
 
 var app = builder.Build();
 
 app.UseHttpsRedirection();
+
+app.MapHealthChecks("/healthz");
 
 app.MapGet("/", () => "TokenRanges Service");
 app.MapPost("/assign", 

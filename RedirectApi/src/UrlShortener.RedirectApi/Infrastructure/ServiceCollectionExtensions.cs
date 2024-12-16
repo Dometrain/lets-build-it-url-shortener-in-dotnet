@@ -24,7 +24,8 @@ public static class ServiceCollectionExtensions
 
             return new RedisUrlReader(
                 new CosmosShortenedUrlReader(container),
-                redisConnectionMultiplexer);
+                redisConnectionMultiplexer,
+                s.GetRequiredService<ILogger<RedisUrlReader>>());
         });
 
         return services;

@@ -23,6 +23,14 @@ if (!string.IsNullOrEmpty(keyVaultName))
         new DefaultAzureCredential());
 }
 
+builder.Services.AddHealthChecks()
+    .AddCosmosHealthCheck(builder.Configuration)
+    .AddUrlGroup(
+        new Uri(
+            new Uri(builder.Configuration["TokenRangeService:Endpoint"]!),
+            "healthz"),
+        name: "token-range-service");
+
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -79,11 +87,11 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowWebApp", policy =>
     {
-        if(builder.Configuration["WebAppEndpoints"] is null)
+        if (builder.Configuration["WebAppEndpoints"] is null)
             return;
-        
+
         var origins = builder.Configuration["WebAppEndpoints"]!.Split(",");
-        
+
         policy
             .WithOrigins(origins.ToArray())
             .AllowAnyMethod()
@@ -101,6 +109,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapHealthChecks("/healthz")
+    .AllowAnonymous();
 
 app.UseCors("AllowWebApp");
 

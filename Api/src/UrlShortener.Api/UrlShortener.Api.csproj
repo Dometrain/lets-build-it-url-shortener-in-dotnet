@@ -7,6 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AspNetCore.HealthChecks.CosmosDb" Version="8.0.1" />
+    <PackageReference Include="AspNetCore.HealthChecks.Uris" Version="8.0.1" />
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.3.2" />
     <PackageReference Include="Azure.Identity" Version="1.13.1" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.4" />
