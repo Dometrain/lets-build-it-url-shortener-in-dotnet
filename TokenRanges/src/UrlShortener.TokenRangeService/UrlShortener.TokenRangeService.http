@@ -1,9 +1,0 @@
-POST https://token-range-service-piza2nvlxc5jg.azurewebsites.net/assign
-Accept: application/json
-Content-Type: application/json
-
-{
-  "key": "A1234"
-}
-
-###
