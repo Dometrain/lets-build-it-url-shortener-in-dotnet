@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 @secure()
 param pgSqlPassword string
+param customDomain string
 
 var uniqueId = uniqueString(resourceGroup().id)
 var keyVaultName = 'kv-${uniqueId}'
@@ -72,7 +73,7 @@ module apiService 'modules/compute/appservice.bicep' = {
       }
       {
         name: 'RedirectService__Endpoint'
-        value: '${redirectApiService.outputs.url}/r/'
+        value: 'https://${customDomain}/r/'
       }
     ]
   }
@@ -215,6 +216,8 @@ module entraApp 'modules/identity/entra-app.bicep' = {
     spaRedirectUris: [
       'http://localhost:3000/' // Not for PRD use
       staticWebApp.outputs.url
+      'https://${frontDoor.outputs.endpointHostName}'
+      'https://${customDomain}'
     ]
   }
 }
@@ -237,4 +240,32 @@ module staticWebApp 'modules/web/static-web-app.bicep' = {
     name: 'web-app-${uniqueId}'
     location: location
   }
+}
+
+module frontDoor 'modules/network/front-door.bicep' = {
+  name: 'frontDoorDeployment'
+  params: {
+    endpointName: 'endpoint-${uniqueId}'
+    profileName: 'front-door-${uniqueId}'
+    wafPolicyName: 'waf${uniqueId}'
+    customDomainName: customDomain
+  }
+}
+
+module frontDoorRoutes 'modules/network/front-door-routes.bicep' = {
+  name: 'frontDoorRoutesDeployment'
+  params: {
+    endpointName: 'endpoint-${uniqueId}'
+    profileName: 'front-door-${uniqueId}'
+    uniqueId: uniqueId
+    redirectApiHostName: redirectApiService.outputs.hostname
+    apiHostName: apiService.outputs.hostname
+    webHostName: staticWebApp.outputs.hostname
+    customDomainId: frontDoor.outputs.customDomainId
+  }
+  dependsOn: [
+    redirectApiService
+    apiService
+    staticWebApp
+  ]
 }
