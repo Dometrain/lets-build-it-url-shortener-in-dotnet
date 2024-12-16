@@ -7,6 +7,7 @@ param applicationName string
   'AzureADandPersonalMicrosoftAccount'
 ])
 param signInAudience string = 'AzureADandPersonalMicrosoftAccount'
+param spaRedirectUris array = []
 
 resource application 'Microsoft.Graph/applications@v1.0' = {
   displayName: applicationName
@@ -35,6 +36,14 @@ resource updateApplicationWithSettings 'Microsoft.Graph/applications@v1.0' = {
   identifierUris: [
     'api://${application.appId}'
   ]
+  spa: { redirectUris: spaRedirectUris }
+  web: {
+    implicitGrantSettings: {
+      enableAccessTokenIssuance: true
+      enableIdTokenIssuance: true
+    }
+    redirectUris: []
+  }
 }
 
 output appId string = application.appId

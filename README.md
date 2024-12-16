@@ -62,6 +62,13 @@ https://learn.microsoft.com/en-gb/entra/workload-id/workload-identity-federation
 az webapp deployment list-publishing-profiles --name api-piza2nvlxc5jg --resource-group dometrain-urlshortener-dev --xml
 ```
 
+## Get Static Web Apps Deployment Token
+
+```bash
+az staticwebapp secrets list --name web-app-piza2nvlxc5jg --query "properties.apiKey"
+```
+
+
 # Utilities
 
 - Base62 converter: https://math.tools/calculator/base/10-62

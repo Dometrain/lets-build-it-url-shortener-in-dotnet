@@ -1,0 +1,28 @@
+
+.url-form {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 40px;
+}
+
+.url-input {
+    flex: 1;
+    padding: 12px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+.shorten-button {
+    background: linear-gradient(87.03deg, #756AF6 16.38%, #CC7DDA 62.94%);
+    color: white;
+    border: none;
+    border-radius: 25px;
+    padding: 12px 30px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.shorten-button:hover {
+    background: linear-gradient(87.03deg, #CC7DDA 16.38%, #756AF6 62.94%);
+}

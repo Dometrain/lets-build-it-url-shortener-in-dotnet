@@ -57,6 +57,10 @@ module apiService 'modules/compute/appservice.bicep' = {
         name: 'AzureAd__Scopes'
         value: 'Urls.Read'
       }
+      {
+        name: 'WebAppEndpoints'
+        value: '${staticWebApp.outputs.url},http://localhost:3000'
+      }
     ]
   }
   dependsOn: [
@@ -188,6 +192,10 @@ module entraApp 'modules/identity/entra-app.bicep' = {
   name: 'entraAppWeb'
   params: {
     applicationName: 'web-${uniqueId}'
+    spaRedirectUris: [
+      'http://localhost:3000/' // Not for PRD use
+      staticWebApp.outputs.url
+    ]
   }
 }
 
@@ -201,4 +209,12 @@ module redisCache 'modules/storage/redis-cache.bicep' = {
   dependsOn: [
     keyVault
   ]
+}
+
+module staticWebApp 'modules/web/static-web-app.bicep' = {
+  name: 'staticWebAppDeployment'
+  params: {
+    name: 'web-app-${uniqueId}'
+    location: location
+  }
 }
