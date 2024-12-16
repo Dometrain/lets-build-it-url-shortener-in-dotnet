@@ -44,6 +44,7 @@ jobs:
         resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
         template: ./infrastructure/main.bicep
         parameters: pgSqlPassword=${{ secrets.PG_SQL_PASSWORD }}
+        additionalArguments: "--only-show-errors"
 
 
  deploy-stg:
@@ -73,6 +74,7 @@ jobs:
           resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
           parameters: pgSqlPassword=${{ secrets.PG_SQL_PASSWORD }}
+          additionalArguments: "--only-show-errors"
 
 
  deploy-prd:
@@ -103,3 +105,4 @@ jobs:
           resourceGroupName: ${{ vars.RESOURCE_GROUP_NAME }}
           template: ./infrastructure/main.bicep
           parameters: pgSqlPassword=${{ secrets.PG_SQL_PASSWORD }}
+          additionalArguments: "--only-show-errors"

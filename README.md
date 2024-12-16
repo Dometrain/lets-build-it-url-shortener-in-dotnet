@@ -30,6 +30,11 @@ az deployment group what-if --resource-group dometrain-urlshortener-dev --templa
 az deployment group create --resource-group dometrain-urlshortener-dev --template-file infrastructure/main.bicep
 ```
 
+#### What-if
+```bash
+az deployment group what-if --resource-group dometrain-urlshortener-dev --template-file infrastructure/main.bicep
+```
+
 ### Create User for GH Actions
 
 ```bash
