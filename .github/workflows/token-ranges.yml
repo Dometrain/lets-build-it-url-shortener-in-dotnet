@@ -1,0 +1,155 @@
+name: Token Range Service
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - TokenRanges/**
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - TokenRanges/**
+  workflow_dispatch: # manual trigger
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: dotnet publish
+      run: dotnet publish TokenRanges/src/UrlShortener.TokenRangeService -c Release -o ${{env.DOTNET_ROOT}}/myapp 
+    - name: Upload artifact for deployment job
+      uses: actions/upload-artifact@v4
+      with:
+        name: .net-app
+        path: ${{env.DOTNET_ROOT}}/myapp
+    - name: Upload Sql artifact for db deployment
+      uses: actions/upload-artifact@v4
+      with:
+        name: pg-script
+        path: TokenRanges/tests/UrlShortener.TokenRangeService.Tests/Table.sql
+
+  deploy-dev:
+    runs-on: ubuntu-latest
+    needs: build
+    environment: Development
+
+    steps:
+
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+
+      - name: Download db artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: pg-script
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+            
+      - name: Deploy Database Schema
+        env:
+          PGHOST: ${{ secrets.POSTGRES_HOST }}
+          PGDATABASE: ranges
+          PGUSER: ${{ secrets.POSTGRES_USER }}
+          PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: psql -f Table.sql
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.TOKEN_RANGES_RESOURCE_NAME }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_TOKENRANGES_PUBLISH_PROFILE }}
+          package: .
+
+
+  deploy-stg:
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    environment: Staging
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+
+      - name: Download db artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: pg-script
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+            
+      - name: Deploy Database Schema
+        env:
+          PGHOST: ${{ secrets.POSTGRES_HOST }}
+          PGDATABASE: ranges
+          PGUSER: ${{ secrets.POSTGRES_USER }}
+          PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: psql -f Table.sql
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.TOKEN_RANGES_RESOURCE_NAME }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_TOKENRANGES_PUBLISH_PROFILE }}
+          package: .
+
+
+  deploy-prd:
+    runs-on: ubuntu-latest
+    needs: deploy-stg
+    environment: Production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: .net-app
+    
+      - name: Download db artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: pg-script
+
+      - name: Install PostgreSQL client
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+            
+      - name: Deploy Database Schema
+        env:
+          PGHOST: ${{ secrets.POSTGRES_HOST }}
+          PGDATABASE: ranges
+          PGUSER: ${{ secrets.POSTGRES_USER }}
+          PGPASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: psql -f Table.sql
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.TOKEN_RANGES_RESOURCE_NAME }}
+          slot-name: 'Production'
+          publish-profile: ${{ secrets.AZURE_TOKENRANGES_PUBLISH_PROFILE }}
+          package: .

@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using UrlShortener.Api;
-using UrlShortener.Core.Urls;
 using UrlShortener.Core.Urls.Add;
 using UrlShortener.Tests.Extensions;
+using UrlShortener.Tests.TestDoubles;
 
 namespace UrlShortener.Tests;
 
@@ -20,19 +20,12 @@ public class ApiFixture : WebApplicationFactory<IApiAssemblyMarker>
                 services
                     .AddSingleton<IUrlDataStore>(
                         new InMemoryUrlDataStore());
+                
+                services.Remove<ITokenRangeApiClient>();
+                services.AddSingleton<ITokenRangeApiClient, FakeTokenRangeApiClient>();
             }
         );
         
         base.ConfigureWebHost(builder);
-    }
-}
-
-
-public class InMemoryUrlDataStore : Dictionary<string, ShortenedUrl>, IUrlDataStore
-{
-    public Task AddAsync(ShortenedUrl shortened, CancellationToken cancellationToken)
-    {
-        Add(shortened.ShortUrl, shortened);
-        return Task.CompletedTask;
     }
 }

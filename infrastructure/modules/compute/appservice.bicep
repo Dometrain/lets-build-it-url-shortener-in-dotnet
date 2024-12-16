@@ -50,3 +50,4 @@ resource webAppConfig 'Microsoft.Web/sites/config@2023-12-01' = {
 
 output appServiceId string = webApp.id
 output principalId string = webApp.identity.principalId
+output url string = 'https://${webApp.properties.defaultHostName}'

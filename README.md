@@ -56,3 +56,7 @@ https://learn.microsoft.com/en-gb/entra/workload-id/workload-identity-federation
 ```bash
 az webapp deployment list-publishing-profiles --name api-piza2nvlxc5jg --resource-group dometrain-urlshortener-dev --xml
 ```
+
+# Utilities
+
+- Base62 converter: https://math.tools/calculator/base/10-62

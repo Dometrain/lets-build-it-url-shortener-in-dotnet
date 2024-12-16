@@ -3,8 +3,12 @@ name: API
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - Api/**
   pull_request:
     branches: [ "main" ]
+    paths:
+      - Api/**
   workflow_dispatch: # manual trigger
 
 jobs:

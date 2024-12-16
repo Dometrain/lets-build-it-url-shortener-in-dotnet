@@ -11,13 +11,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{D19D1803-F75
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{D80686DD-EEED-40EC-A2FB-B7459B71C198}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Api.Core.Tests", "UrlShortener.Api.Core.Tests\UrlShortener.Api.Core.Tests.csproj", "{49470BEB-FDF9-4024-8577-B3A8A12FBA0F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Api.Core.Tests", "Api\tests\UrlShortener.Api.Core.Tests\UrlShortener.Api.Core.Tests.csproj", "{49470BEB-FDF9-4024-8577-B3A8A12FBA0F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Core", "Api\src\UrlShortener.Core\UrlShortener.Core.csproj", "{EFFEE363-1A72-4123-BB19-8F0836EC64AC}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Tests", "Api\tests\UrlShortener.Tests\UrlShortener.Tests.csproj", "{027693B3-D6A2-44E5-90C3-0FFE87545B0A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.Infrastructure", "Api\src\UrlShortener.Infrastructure\UrlShortener.Infrastructure.csproj", "{A2B15F28-53AB-4F27-A84A-C3B74097864E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TokenRanges", "TokenRanges", "{70423501-F472-4928-AE8D-F0D984325B6C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{692CD4E7-DCEE-4F7C-A33A-46587A415382}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.TokenRangeService", "TokenRanges\src\UrlShortener.TokenRangeService\UrlShortener.TokenRangeService.csproj", "{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{44B5FDDB-5DC6-4099-A210-F917940FF76D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UrlShortener.TokenRangeService.Tests", "TokenRanges\tests\UrlShortener.TokenRangeService.Tests\UrlShortener.TokenRangeService.Tests.csproj", "{87A184B6-6E57-4AA4-A900-D106ABE1BA75}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,6 +58,14 @@ Global
 		{A2B15F28-53AB-4F27-A84A-C3B74097864E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2B15F28-53AB-4F27-A84A-C3B74097864E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2B15F28-53AB-4F27-A84A-C3B74097864E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87A184B6-6E57-4AA4-A900-D106ABE1BA75}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87A184B6-6E57-4AA4-A900-D106ABE1BA75}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87A184B6-6E57-4AA4-A900-D106ABE1BA75}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87A184B6-6E57-4AA4-A900-D106ABE1BA75}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{D19D1803-F758-441F-B3DB-C61FEA09C3FF} = {0D6CA005-CE70-4CE8-9042-8A1CB86D9F7C}
@@ -57,5 +75,9 @@ Global
 		{EFFEE363-1A72-4123-BB19-8F0836EC64AC} = {D19D1803-F758-441F-B3DB-C61FEA09C3FF}
 		{027693B3-D6A2-44E5-90C3-0FFE87545B0A} = {D80686DD-EEED-40EC-A2FB-B7459B71C198}
 		{A2B15F28-53AB-4F27-A84A-C3B74097864E} = {D19D1803-F758-441F-B3DB-C61FEA09C3FF}
+		{692CD4E7-DCEE-4F7C-A33A-46587A415382} = {70423501-F472-4928-AE8D-F0D984325B6C}
+		{DB3F8ACD-6F7C-4D90-B20E-7ABF7EB86CCA} = {692CD4E7-DCEE-4F7C-A33A-46587A415382}
+		{44B5FDDB-5DC6-4099-A210-F917940FF76D} = {70423501-F472-4928-AE8D-F0D984325B6C}
+		{87A184B6-6E57-4AA4-A900-D106ABE1BA75} = {44B5FDDB-5DC6-4099-A210-F917940FF76D}
 	EndGlobalSection
 EndGlobal
