@@ -20,9 +20,10 @@ public class ApiFixture : WebApplicationFactory<IRedirectApiAssemblyMarker>, IAs
 
     public InMemoryShortenedUrlReader ShortenedUrlReader { get; } = new();
 
-    public Task InitializeAsync()
+    public async Task InitializeAsync()
     {
-        return _redisContainer.StartAsync();
+        await _redisContainer.StartAsync();
+        Environment.SetEnvironmentVariable("Redis__ConnectionString", RedisConnectionString);
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -30,15 +31,13 @@ public class ApiFixture : WebApplicationFactory<IRedirectApiAssemblyMarker>, IAs
         builder.ConfigureTestServices(
             services =>
             {
-                
                 services.Remove<IShortenedUrlReader>();
                 services.AddSingleton<IShortenedUrlReader>(
-                        s=>
-                    new RedisUrlReader(ShortenedUrlReader,
-                        ConnectionMultiplexer.Connect(RedisConnectionString),
-                        s.GetRequiredService<ILogger<RedisUrlReader>>())
-                    );       
-                
+                    s =>
+                        new RedisUrlReader(ShortenedUrlReader,
+                            ConnectionMultiplexer.Connect(RedisConnectionString),
+                            s.GetRequiredService<ILogger<RedisUrlReader>>())
+                );
             });
         base.ConfigureWebHost(builder);
     }

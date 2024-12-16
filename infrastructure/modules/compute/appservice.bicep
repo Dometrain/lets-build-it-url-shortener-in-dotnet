@@ -2,7 +2,17 @@ param location string = resourceGroup().location
 param appServicePlanName string
 param appName string
 param keyVaultName string
+param logAnalyticsWorkspaceId string
 param appSettings array = []
+
+module appInsights '../telemetry/app-insights.bicep' = {
+  name: '${appName}AppInsightsDeployment'
+  params: {
+    location: location
+    name: 'app-insights-${appName}'
+    logAnalyticsWorkspaceId: logAnalyticsWorkspaceId
+  }
+}
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   kind: 'linux'
@@ -30,6 +40,14 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
           {
             name: 'KeyVaultName'
             value: keyVaultName
+          }
+          {
+            name: 'APPINSIGHTS_INSTRUMENTATIONKEY'
+            value: appInsights.outputs.instrumentrationKey
+          }
+          {
+            name: 'APPLICATIONINSIGHTS_CONNECTION_STRING'
+            value: appInsights.outputs.connectionString
           }
         ],
         appSettings

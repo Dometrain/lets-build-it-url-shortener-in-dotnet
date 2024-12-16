@@ -2,6 +2,7 @@ using System.ClientModel;
 using System.Security.Authentication;
 using System.Security.Claims;
 using Azure.Identity;
+using Azure.Monitor.OpenTelemetry.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -98,6 +99,12 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader();
     });
 });
+
+var telemetryConnectionString = builder.Configuration["APPLICATIONINSIGHTS_CONNECTION_STRING"];
+if (telemetryConnectionString is not null)
+    builder.Services
+        .AddOpenTelemetry()
+        .UseAzureMonitor();
 
 var app = builder.Build();
 
