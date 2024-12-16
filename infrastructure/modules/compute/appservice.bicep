@@ -1,6 +1,7 @@
 param location string = resourceGroup().location
 param appServicePlanName string
 param appName string
+param keyVaultName string
 
 resource appServicePlan 'Microsoft.Web/serverfarms@2023-12-01' = {
   kind: 'linux'
@@ -22,7 +23,16 @@ resource webApp 'Microsoft.Web/sites@2023-12-01' = {
     httpsOnly: true
     siteConfig: {
       linuxFxVersion: 'DOTNETCORE|8.0'
+      appSettings: [
+        {
+          name: 'KeyVaultName'
+          value: keyVaultName
+        }
+      ]
     }
+  }
+  identity: {
+    type: 'SystemAssigned'
   }
 }
 
@@ -35,3 +45,4 @@ resource webAppConfig 'Microsoft.Web/sites/config@2023-12-01' = {
 }
 
 output appServiceId string = webApp.id
+output principalId string = webApp.identity.principalId

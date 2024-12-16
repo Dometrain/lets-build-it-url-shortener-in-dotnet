@@ -1,4 +1,14 @@
+using Azure.Identity;
+
 var builder = WebApplication.CreateBuilder(args);
+
+var keyVaultName = builder.Configuration["KeyVaultName"];
+if(!string.IsNullOrEmpty(keyVaultName))
+{
+    builder.Configuration.AddAzureKeyVault(
+        new Uri($"https://{keyVaultName}.vault.azure.net/"),
+        new DefaultAzureCredential());
+}
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -22,7 +32,7 @@ var summaries = new[]
 };
 
 app.MapGet("/weatherforecast", () =>
-{
+    {
     var forecast =  Enumerable.Range(1, 5).Select(index =>
         new WeatherForecast
         (
