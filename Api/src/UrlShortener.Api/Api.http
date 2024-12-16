@@ -1,0 +1,11 @@
+@Api_HostAddress = https://api-g47bfaivuzobo.azurewebsites.net
+
+POST {{Api_HostAddress}}/api/urls
+Accept: application/json
+Content-Type: application/json
+
+{
+  "LongUrl": "https://dometrain.com"
+}
+
+###

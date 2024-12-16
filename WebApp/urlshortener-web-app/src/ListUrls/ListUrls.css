@@ -1,0 +1,22 @@
+
+.url-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.url-item {
+    background: #f8f8f8;
+    padding: 15px 20px;
+    border-radius: 8px;
+    text-align: left;
+}
+
+.url-item a {
+    text-decoration: none;
+    color: #282c34;
+}
+
+.url-item a:hover {
+    color: #756AF6;
+}

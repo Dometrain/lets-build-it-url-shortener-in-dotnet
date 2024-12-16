@@ -1,0 +1,106 @@
+name: CosmosDB Trigger Function
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - CosmosDbTrigger/**
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - CosmosDbTrigger/**
+  workflow_dispatch: # manual trigger
+
+env:
+  AZURE_FUNCTIONAPP_PACKAGE_PATH: 'CosmosDbTrigger/src/UrlShortener.CosmosDbTriggerFunction'       
+  DOTNET_VERSION: '8.0.x'
+
+jobs:
+
+  build-and-deploy-dev:
+    runs-on: ubuntu-latest
+    environment: Development
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build --configuration Release --output ./output
+        popd
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
+      with:
+        app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_COSMOSTRIGGER_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+
+  build-and-deploy-stg:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-dev
+    environment: Staging
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build --configuration Release --output ./output
+        popd
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
+      with:
+        app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_COSMOSTRIGGER_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+
+  build-and-deploy-prd:
+    runs-on: ubuntu-latest
+    needs: build-and-deploy-stg
+    environment: Production
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    steps:
+    - name: 'Checkout GitHub Action'
+      uses: actions/checkout@v3
+
+    - name: Setup DotNet ${{ env.DOTNET_VERSION }} Environment
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNET_VERSION }}
+
+    - name: 'Resolve Project Dependencies Using Dotnet'
+      shell: bash
+      run: |
+        pushd './${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}'
+        dotnet build --configuration Release --output ./output
+        popd
+
+    - name: 'Run Azure Functions Action'
+      uses: Azure/functions-action@v1
+      id: fa
+      with:
+        app-name: ${{ vars.AZURE_FUNCTIONAPP_NAME }}
+        package: '${{ env.AZURE_FUNCTIONAPP_PACKAGE_PATH }}/output'
+        publish-profile: ${{ secrets.AZURE_COSMOSTRIGGER_FUNCTIONAPP_PUBLISH_PROFILE }}
+
+      
