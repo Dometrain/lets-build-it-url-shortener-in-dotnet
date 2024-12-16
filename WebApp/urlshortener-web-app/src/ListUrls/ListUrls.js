@@ -6,7 +6,13 @@ function ListUrls({ urls, continuationToken, onLoadMore }) {
         <div className="url-list">
             {urls && urls.map((url) => (
                 <div key={url.shortUrl} className="url-item">
-                    {url.shortUrl} → {url.longUrl}
+                    <a href={url.shortUrl} className="short-url">
+                        {url.id}
+                    </a>
+                    {" → "}
+                    <a href={url.longUrl} className="long-url">
+                        {url.longUrl}
+                    </a>
                 </div>
             ))}
             {continuationToken && (

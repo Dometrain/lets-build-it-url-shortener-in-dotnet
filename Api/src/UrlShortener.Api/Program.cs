@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Web;
 using UrlShortener.Api;
 using UrlShortener.Api.Extensions;
+using UrlShortener.Core.Urls;
 using UrlShortener.Core.Urls.Add;
 using UrlShortener.Core.Urls.List;
 using UrlShortener.Infrastructure.Extensions;
@@ -32,6 +33,10 @@ builder.Services
     .AddAddUrlFeature()
     .AddListUrlsFeature()
     .AddCosmosUrlDataStore(builder.Configuration);
+
+builder.Services.AddSingleton(
+    new RedirectLinkBuilder(
+        new Uri(builder.Configuration["RedirectService:Endpoint"]!)));
 
 builder.Services.AddHttpClient("TokenRangeService",
     client =>
