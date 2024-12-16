@@ -72,3 +72,9 @@ az staticwebapp secrets list --name web-app-piza2nvlxc5jg --query "properties.ap
 # Utilities
 
 - Base62 converter: https://math.tools/calculator/base/10-62
+
+
+# GitHub Actions
+
+- https://learn.microsoft.com/en-us/azure/container-apps/tutorial-ci-cd-runners-jobs?tabs=bash&pivots=container-apps-jobs-self-hosted-ci-cd-azure-pipelines
+- https://api.github.com/meta

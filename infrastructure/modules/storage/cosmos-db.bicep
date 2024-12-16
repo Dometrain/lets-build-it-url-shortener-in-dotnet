@@ -4,6 +4,7 @@ param kind string
 param databaseName string
 param locationName string
 param keyVaultName string
+param subnets array
 
 param containers array = [
   {
@@ -27,6 +28,12 @@ resource cosmosDbAccount 'Microsoft.DocumentDB/databaseAccounts@2024-05-15' = {
         locationName: locationName
         failoverPriority: 0
         isZoneRedundant: false
+      }
+    ]
+    isVirtualNetworkFilterEnabled: true
+    virtualNetworkRules: [
+      for subnetId in subnets: {
+        id: subnetId
       }
     ]
   }

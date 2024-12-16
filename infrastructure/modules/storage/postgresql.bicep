@@ -4,6 +4,8 @@ param administratorLogin string
 @secure()
 param administratorLoginPassword string
 param keyVaultName string
+param subnetId string
+param vnetId string
 
 resource postgresqlServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-12-01-preview' = {
   name: name
@@ -23,16 +25,67 @@ resource postgresqlServer 'Microsoft.DBforPostgreSQL/flexibleServers@2023-12-01-
     }
     administratorLogin: administratorLogin
     administratorLoginPassword: administratorLoginPassword
+    network: {
+      publicNetworkAccess: 'Disabled'
+    }
   }
   resource database 'databases' = {
     name: 'ranges'
   }
-  resource firewallAzure 'firewallRules' = {
-    name: 'allow-all-azure-internal-IPs'
-    properties: {
-      startIpAddress: '0.0.0.0'
-      endIpAddress: '0.0.0.0'
+}
+
+resource privateEndpoint 'Microsoft.Network/privateEndpoints@2024-01-01' = {
+  location: location
+  name: name
+  properties: {
+    subnet: {
+      id: subnetId
     }
+    customNetworkInterfaceName: '${name}-nic'
+    privateLinkServiceConnections: [
+      {
+        name: name
+        properties: {
+          privateLinkServiceId: postgresqlServer.id
+          groupIds: ['postgresqlServer']
+        }
+      }
+    ]
+  }
+  tags: {}
+  dependsOn: []
+}
+
+var privateDnsZoneName = 'privatelink.postgres.database.azure.com'
+resource privateDnsZone 'Microsoft.Network/privateDnsZones@2024-06-01' = {
+  name: privateDnsZoneName
+  location: 'global'
+}
+
+resource privateDnsZoneVNetLink 'Microsoft.Network/privateDnsZones/virtualNetworkLinks@2024-06-01' = {
+  parent: privateDnsZone
+  name: '${privateDnsZoneName}-dblink'
+  location: 'global'
+  properties: {
+    registrationEnabled: false
+    virtualNetwork: {
+      id: vnetId
+    }
+  }
+}
+
+resource privateDnsZoneGroup 'Microsoft.Network/privateEndpoints/privateDnsZoneGroups@2024-03-01' = {
+  name: 'default'
+  parent: privateEndpoint
+  properties: {
+    privateDnsZoneConfigs: [
+      {
+        name: 'privatelink-postgres-database-azure-com'
+        properties: {
+          privateDnsZoneId: privateDnsZone.id
+        }
+      }
+    ]
   }
 }
 
